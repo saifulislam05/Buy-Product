@@ -1,12 +1,32 @@
 import "./App.css";
-import Footer from "./components/Footer/Footer";
-import Header from './components/Header/Header'
-function App() {
-  return (
-    <div className="App h-[100vh] flex flex-col justify-between ">
-      <Header />
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-      <Footer/>
+import Layout from "./Layout";
+import Products from "./components/Body/Products";
+import ProductDetails from "./components/Body/ProductDetails";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element:<Products/>
+      },
+      {
+        path: "/productDetails/:productId",
+        element:<ProductDetails/>
+        
+      }
+    ]
+  }
+]);
+function App() {
+
+  return (
+    <div className="App min-h-screen flex flex-col">
+      <RouterProvider router={router}/>
     </div>
   );
 }

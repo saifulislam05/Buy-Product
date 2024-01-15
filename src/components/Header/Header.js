@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 
 const Header = () => {
   return (
-    <div className="bg-primary min-h-[9vh]">
+    <div className="bg-primary ">
       <Navbar />
     </div>
   );
