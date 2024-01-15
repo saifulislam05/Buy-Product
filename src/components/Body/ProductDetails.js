@@ -1,6 +1,26 @@
 import React from "react";
 
+import productsData from '../../Data/products.json'
+
+import {useParams} from "react-router-dom"
+
 const ProductDetails = () => {
+
+  const params = useParams();
+  const { productId } = params;
+
+  const data = productsData.find((item)=>item.id==productId);
+
+  const {
+    title,
+    description,
+    price,
+    discountPercentage,
+    rating,
+    stock,
+    thumbnail,
+  } = data;
+const discountedPrice = price - price * (discountPercentage / 100);
   return (
     <section className="w-11/12 mx-auto mb-4">
       <h1 className="text-xl mx-auto w-fit border-b-2 pb-2 my-4 font-semibold border-base-content">
@@ -8,16 +28,12 @@ const ProductDetails = () => {
       </h1>
       <div className="flex flex-wrap justify-between gap-4 md:gap-0">
         <figure className="w-full md:w-4/12">
-          <img
-            src="https://daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-            alt="Album"
-            className="w-full"
-          />
+          <img src={thumbnail} alt={title} className="w-full" />
         </figure>
         <div className="w-full md:w-7/12 flex flex-col justify-between ">
           <div className="mb-4 ">
             <h2 className="max-w-xl mb-4 text-2xl font-bold  md:text-4xl">
-              Shoes
+              {title}
             </h2>
             <div className="flex items-center mb-6">
               <ul className="flex mr-2">
@@ -34,25 +50,21 @@ const ProductDetails = () => {
                   </svg>
                 </li>
               </ul>
-              <p className="text-xs  ">(2 customer reviews)</p>
+              <p className="text-xs  ">(29 customer reviews)</p>
             </div>
-            <p className="max-w-md mb-8 ">
-              Lorem ispum dor amet Lorem ispum dor amet Lorem ispum dor amet
-              Lorem ispum dor amet Lorem ispum dor amet Lorem ispum dor amet
-              Lorem ispum dor amet Lorem ispum dor amet
-            </p>
-            <p className="inline-block mb-4 text-4xl font-bold   ">
-              <span>$1000.99</span>
+            <p className="max-w-md mb-8 ">{description}</p>
+            <div className="inline-block mb-4 text-4xl font-bold   ">
+              <span>${price}</span>
               <span className="ml-3 text-base font-normal text-gray-500 line-through ">
-                $1500.99
+                ${discountedPrice.toFixed(2)}
               </span>
-              <p className="text-sm mt-2 text-red-200">30% Off</p>
-            </p>
-            <p className="text-success">7 in stock</p>
+              <p className="text-sm mt-2 text-red-200">{discountPercentage}% Off</p>
+            </div>
+            <p className="text-success">{stock} in stock</p>
           </div>
 
           <div>
-            <label for="" className="w-full text-lg font-semibold  ">
+            <label htmlFor="" className="w-full text-lg font-semibold  ">
               Quantity
             </label>
             <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
