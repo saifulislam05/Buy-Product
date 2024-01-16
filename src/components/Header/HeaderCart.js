@@ -1,6 +1,12 @@
 import React from 'react'
+import { useCart } from '../../Context/CartContext';
 
 const HeaderCart = () => {
+  const cart = useCart();
+  const totalQuantity=cart.cartState.items.reduce((total,item) => {
+    return total+=item.qty;
+  },0)
+  console.log(totalQuantity);
   return (
     <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">

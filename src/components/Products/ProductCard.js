@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-
 const ProductCard = ({ data }) => {
   const { id, title, price, discountPercentage, thumbnail } = data;
   // Calculate discounted price
   const discountedPrice = price - price * (discountPercentage / 100);
+
   return (
     <div className="card w-full bg-base-100 shadow-xl">
       <Link to={`/productDetails/${id}`}>

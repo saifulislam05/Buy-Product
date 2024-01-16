@@ -1,15 +1,13 @@
-import React from "react";
-
-import productsData from '../../Data/products.json'
-
-import {useParams} from "react-router-dom"
+import React, { useReducer } from "react";
+import { useParams } from "react-router-dom";
+import { useCart } from "../Context/CartContext";
+import productsData from "../Data/products.json";
 
 const ProductDetails = () => {
-
   const params = useParams();
   const { productId } = params;
 
-  const data = productsData.find((item)=>item.id==productId);
+  const data = productsData.find((item) => item.id == productId);
 
   const {
     title,
@@ -20,7 +18,29 @@ const ProductDetails = () => {
     stock,
     thumbnail,
   } = data;
-const discountedPrice = price - price * (discountPercentage / 100);
+  const discountedPrice = price - price * (discountPercentage / 100);
+
+  const quantityReducer = (state, action) => {
+    switch (action) {
+      case "INCREASE":
+        return state + 1;
+      case "DECREASE":
+        return state - 1;
+      default:
+        return state;
+    }
+  };
+
+  const [quantityState, quantityDispatch] = useReducer(quantityReducer, 1);
+
+  const useCartReducer = useCart();
+  const { cartState, CartDispatch } = useCartReducer;
+
+  const addCartHandler = () => {
+    const itemObj = { productId, qty: quantityState };
+    CartDispatch({ type: "ADD_TO_CART", payload: itemObj });
+  };
+
   return (
     <section className="w-11/12 mx-auto mb-4">
       <h1 className="text-xl mx-auto w-fit border-b-2 pb-2 my-4 font-semibold border-base-content">
@@ -58,7 +78,9 @@ const discountedPrice = price - price * (discountPercentage / 100);
               <span className="ml-3 text-base font-normal text-gray-500 line-through ">
                 ${discountedPrice.toFixed(2)}
               </span>
-              <p className="text-sm mt-2 text-red-200">{discountPercentage}% Off</p>
+              <p className="text-sm mt-2 text-red-200">
+                {discountPercentage}% Off
+              </p>
             </div>
             <p className="text-success">{stock} in stock</p>
           </div>
@@ -69,18 +91,31 @@ const discountedPrice = price - price * (discountPercentage / 100);
             </label>
             <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
               <div className="join">
-                <button className="join-item btn btn-sm text-lg btn-primary">
+                <button
+                  className="join-item btn btn-sm text-lg btn-primary disabled:bg-neutral"
+                  onClick={() => quantityDispatch("DECREASE")}
+                  disabled={quantityState === 1}
+                >
                   -
                 </button>
-                <button className="join-item btn btn-sm">1</button>
-                <button className="join-item btn btn-sm text-lg btn-primary">
+                <button className="join-item btn btn-sm">
+                  {quantityState}
+                </button>
+                <button
+                  className="join-item btn btn-sm text-lg btn-primary disabled:bg-neutral"
+                  onClick={() => quantityDispatch("INCREASE")}
+                  disabled={quantityState == stock}
+                >
                   +
                 </button>
               </div>
             </div>
           </div>
 
-          <button className="btn btn-primary w-full md:w-56 ">
+          <button
+            className="btn btn-primary w-full md:w-56 "
+            onClick={addCartHandler}
+          >
             Add to Cart
           </button>
         </div>

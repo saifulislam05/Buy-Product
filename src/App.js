@@ -1,9 +1,9 @@
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
 import Layout from "./Layout";
-import Products from "./components/Body/Products";
-import ProductDetails from "./components/Body/ProductDetails";
+import Products from "./Pages/Products";
+import ProductDetails from "./Pages/ProductDetails";
+import { CartProvider } from "./Context/CartContext";
 
 const router = createBrowserRouter([
   {
@@ -12,21 +12,23 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element:<Products/>
+        element: <Products />,
       },
       {
         path: "/productDetails/:productId",
-        element:<ProductDetails/>
-        
-      }
-    ]
-  }
+        element: <ProductDetails />,
+      },
+    ],
+  },
 ]);
 function App() {
 
   return (
     <div className="App min-h-screen flex flex-col">
-      <RouterProvider router={router}/>
+      <CartProvider>
+
+        <RouterProvider router={router} />
+      </CartProvider>
     </div>
   );
 }

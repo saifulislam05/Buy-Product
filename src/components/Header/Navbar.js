@@ -4,6 +4,7 @@ import HeaderCart from "./HeaderCart";
 import Logo from "./Logo";
 import ThemeSwitcher from "./ThemeSwitcher";
 import UserMenu from "./UserMenu";
+import { CartProvider } from "../../Context/CartContext";
 
 const Navbar = () => {
   return (
@@ -13,7 +14,9 @@ const Navbar = () => {
       </div>
       <div className="flex-none gap-4">
         <ThemeSwitcher />
-        <HeaderCart/>
+         {/* using CartProvider */}
+          <HeaderCart />
+        
         <UserMenu />
       </div>
     </div>
