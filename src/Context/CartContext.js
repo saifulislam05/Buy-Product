@@ -14,13 +14,14 @@ const cartReducer = (state, action) => {
         items: [...state.items, action.payload],
       };
     case "UPDATE_QUANTITY":
-      const updatedItem = state.items.find(
-        (item) => item.productId === action.payload.productId
+      const item = state.items.find(
+        (item) => item.id === action.payload.id
       );
-
-      if (updatedItem) {
-        updatedItem.qty = action.payload.qty;
+      
+      if (item) {
+        item.qty = action.payload.qty;
       }
+
 
       return {
         ...state,
@@ -30,7 +31,7 @@ const cartReducer = (state, action) => {
       return {
         ...state,
         items: state.items.filter(
-          (item) => item.productId !== action.payload.productId
+          (item) => item.id !== action.payload.id
         ),
       };
     case "CLEAR_CART":
@@ -44,10 +45,10 @@ const cartReducer = (state, action) => {
 };
 
 export const CartProvider = ({ children }) => {
-  const [cartState, CartDispatch] = useReducer(cartReducer, initialState);
+  const [cartState, cartDispatch] = useReducer(cartReducer, initialState);
 
   return (
-    <CartContext.Provider value={{ cartState, CartDispatch }}>
+    <CartContext.Provider value={{ cartState, cartDispatch }}>
       {children}
     </CartContext.Provider>
   );

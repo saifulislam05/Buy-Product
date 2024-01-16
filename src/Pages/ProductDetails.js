@@ -1,23 +1,24 @@
 import React, { useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
 import productsData from "../Data/products.json";
 
 const ProductDetails = () => {
   const params = useParams();
-  const { productId } = params;
+  const { id } = params;
 
-  const data = productsData.find((item) => item.id == productId);
+  const product = productsData.find((item) => item.id == id);
 
   const {
     title,
     description,
     price,
+    brand,
     discountPercentage,
     rating,
     stock,
     thumbnail,
-  } = data;
+  } = product;
   const discountedPrice = price - price * (discountPercentage / 100);
 
   const quantityReducer = (state, action) => {
@@ -34,11 +35,14 @@ const ProductDetails = () => {
   const [quantityState, quantityDispatch] = useReducer(quantityReducer, 1);
 
   const useCartReducer = useCart();
-  const { cartState, CartDispatch } = useCartReducer;
+  const { cartState, cartDispatch } = useCartReducer;
+
+
+  const isPresentInCart = cartState.items.filter((item) => item.id == id);
 
   const addCartHandler = () => {
-    const itemObj = { productId, qty: quantityState };
-    CartDispatch({ type: "ADD_TO_CART", payload: itemObj });
+    const itemObj = { ...product, qty: quantityState };
+    cartDispatch({ type: "ADD_TO_CART", payload: itemObj });
   };
 
   return (
@@ -47,14 +51,18 @@ const ProductDetails = () => {
         Details
       </h1>
       <div className="flex flex-wrap justify-between gap-4 md:gap-0">
-        <figure className="w-full md:w-4/12">
+        <figure className="w-full md:w-[45%]">
           <img src={thumbnail} alt={title} className="w-full" />
         </figure>
-        <div className="w-full md:w-7/12 flex flex-col justify-between ">
+        <div className="w-full md:w-6/12 flex flex-col justify-between ">
           <div className="mb-4 ">
             <h2 className="max-w-xl mb-4 text-2xl font-bold  md:text-4xl">
               {title}
             </h2>
+            <p className="mb-2 text-sm mt-2">
+              Brand:
+              <span className=" text-red-300 "> {brand}</span>
+            </p>
             <div className="flex items-center mb-6">
               <ul className="flex mr-2">
                 <li>
@@ -85,39 +93,50 @@ const ProductDetails = () => {
             <p className="text-success">{stock} in stock</p>
           </div>
 
-          <div>
-            <label htmlFor="" className="w-full text-lg font-semibold  ">
-              Quantity
-            </label>
-            <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
-              <div className="join">
-                <button
-                  className="join-item btn btn-sm text-lg btn-primary disabled:bg-neutral"
-                  onClick={() => quantityDispatch("DECREASE")}
-                  disabled={quantityState === 1}
-                >
-                  -
-                </button>
-                <button className="join-item btn btn-sm">
-                  {quantityState}
-                </button>
-                <button
-                  className="join-item btn btn-sm text-lg btn-primary disabled:bg-neutral"
-                  onClick={() => quantityDispatch("INCREASE")}
-                  disabled={quantityState == stock}
-                >
-                  +
-                </button>
+          {isPresentInCart.length > 0 ? (
+            <Link to="/cart">
+              <button className="btn btn-primary w-full md:w-56">
+                View in Cart
+              </button>
+            </Link>
+          ) : (
+            <>
+              <div>
+                <label htmlFor="" className="w-full text-lg font-semibold  ">
+                  Quantity
+                </label>
+                <div className="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
+                  <button
+                    className={`join-item btn btn-sm text-lg btn-primary ${
+                      quantityState === 1 ? "disabled:bg-neutral" : ""
+                    }`}
+                    onClick={() => quantityDispatch("DECREASE")}
+                    disabled={quantityState === 1}
+                  >
+                    -
+                  </button>
+                  <button className="join-item btn btn-sm">
+                    {quantityState}
+                  </button>
+                  <button
+                    className={`join-item btn btn-sm text-lg btn-primary ${
+                      quantityState === stock ? "disabled:bg-neutral" : ""
+                    }`}
+                    onClick={() => quantityDispatch("INCREASE")}
+                    disabled={quantityState === stock}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <button
-            className="btn btn-primary w-full md:w-56 "
-            onClick={addCartHandler}
-          >
-            Add to Cart
-          </button>
+              <button
+                className="btn btn-primary w-full md:w-56"
+                onClick={addCartHandler}
+              >
+                Add to Cart
+              </button>
+            </>
+          )}
         </div>
       </div>
     </section>
