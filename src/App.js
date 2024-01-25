@@ -1,10 +1,11 @@
-import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./Layout";
 import Products from "./Pages/Products";
 import ProductDetails from "./Pages/ProductDetails";
 import { CartProvider } from "./Context/CartContext";
 import Cart from "./Pages/Cart";
+import { Provider } from "react-redux";
+import store from "./app/store";
 
 const router = createBrowserRouter([
   {
@@ -27,11 +28,12 @@ const router = createBrowserRouter([
   },
 ]);
 function App() {
-
   return (
     <div className="App min-h-screen flex flex-col">
       <CartProvider>
-        <RouterProvider router={router} />
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
       </CartProvider>
     </div>
   );

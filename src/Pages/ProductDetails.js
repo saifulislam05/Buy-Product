@@ -1,13 +1,24 @@
 import React, { useReducer } from "react";
-import { useParams,Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
-import productsData from "../Data/products.json";
+import { useSelector, useDispatch } from "react-redux";
+import productsJsonData from "../Data/products.json";
+import { addToCart } from "../features/cart/cartSlice";
 
 const ProductDetails = () => {
+  const dispatch = useDispatch();
   const params = useParams();
   const { id } = params;
+  const productsData = useSelector((store) => store.products.products);
+  const cartsData = useSelector((store) => store.cart.items);
 
-  const product = productsData.find((item) => item.id == id);
+  let productDetails;
+  // if (productsData === undefined) {
+    console.log(productsData);
+    productDetails = productsJsonData.find((item) => item.id == id);
+  // } else {
+  //   productDetails = productsData.find((item) => item.id == id);
+  // }
 
   const {
     title,
@@ -18,7 +29,7 @@ const ProductDetails = () => {
     rating,
     stock,
     thumbnail,
-  } = product;
+  } = productDetails;
   const discountedPrice = price - price * (discountPercentage / 100);
 
   const quantityReducer = (state, action) => {
@@ -37,12 +48,12 @@ const ProductDetails = () => {
   const useCartReducer = useCart();
   const { cartState, cartDispatch } = useCartReducer;
 
-
-  const isPresentInCart = cartState.items.filter((item) => item.id == id);
+  // const isPresentInCart = cartsData?.find((item) => item.id == id);
+  const isPresentInCart = false;
 
   const addCartHandler = () => {
-    const itemObj = { ...product, qty: quantityState };
-    cartDispatch({ type: "ADD_TO_CART", payload: itemObj });
+    const itemObj = { ...productDetails, qty: quantityState };
+    dispatch(addToCart(itemObj));
   };
 
   return (

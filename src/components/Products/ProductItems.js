@@ -1,13 +1,21 @@
 import React from "react";
 import ProductCard from "./ProductCard";
-import productsData from "../../Data/products.json"
+import { useSelector } from "react-redux";
 
 const ProductItems = () => {
+  // const [productsData, setProductsData] = useState([]);
+  const data = useSelector((store) => {
+    return store.products.products;
+  });
+
+  // useEffect(() => {
+  //   setProductsData(data);
+  // }, [data]);
 
   return (
     <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4">
-      {productsData?.length > 0 &&
-        productsData.map((item) => <ProductCard key={item.id} data={item} />)}
+      {data?.length > 0 &&
+        data.map((item) => <ProductCard key={item.id} data={item} />)}
     </div>
   );
 };
